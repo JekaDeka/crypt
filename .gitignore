@@ -1,0 +1,14 @@
+*.pyc
+__pycache__
+myvenv
+djangoCMS
+db.sqlite3
+.DS_Store
+settings.py
+instruction.txt
+django
+application
+galleryserve
+pagination
+portrethit
+static
