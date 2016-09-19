@@ -13,6 +13,22 @@ def main_page(request):
     return render(request, 'crypt/index.html', tmpl_vars)
 
 
+def decrypt_page(request):
+    tmpl_vars = {
+        'all_posts': Post.objects.reverse(),
+        'form': PostForm()
+    }
+    return render(request, 'crypt/decrypt.html', tmpl_vars)
+
+
+def history_page(request):
+    tmpl_vars = {
+        'all_posts': Post.objects.reverse(),
+        'form': PostForm()
+    }
+    return render(request, 'crypt/history.html', tmpl_vars)
+
+
 def create_post(request):
     if request.method == 'POST':
         post_text = request.POST.get('the_post')
