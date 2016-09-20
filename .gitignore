@@ -11,4 +11,5 @@ application
 galleryserve
 pagination
 portrethit
-static
+migrations
+/static
