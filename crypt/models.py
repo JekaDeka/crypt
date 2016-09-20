@@ -14,8 +14,6 @@ class Post(models.Model):
     crypted_text = models.TextField()
     crypted_type = models.PositiveSmallIntegerField(default=1)
 
-    swag = models.TextField()
-
     # Time is a rhinocerous
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
