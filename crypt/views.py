@@ -29,12 +29,12 @@ def history_page(request):
     return render(request, 'crypt/history.html', tmpl_vars)
 
 
-def create_post(request):
+def create_post(request, pk):
     if request.method == 'POST':
         post_text = request.POST.get('the_post')
         response_data = {}
 
-        post = Post(text=post_text)
+        post = Post(text=post_text, crypted_type=pk)
         post.save()
 
         response_data['result'] = 'Create post successful!'
