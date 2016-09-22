@@ -1,23 +1,53 @@
 {% extends 'crypt/base.html' %} {% load staticfiles %} {% block content %}
-
+<div class="container">
     <div class="row">
-      <div class="col-lg-12">
-        <h2>Методы шифрования</h2>
-      </div>
-
-      <div class="col-md-12">
-        <div class="panel panel-default">
-          <div class="panel-body tabs">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab1" data-toggle="tab">Алгоритм замены</a></li>
-              <li><a href="#tab2" data-toggle="tab">Алгоритм перестановки</a></li>
-              <li><a href="#tab3" data-toggle="tab">Аддитивный метод</a></li>
-              <li><a href="#tab4" data-toggle="tab">???????</a></li>
-            </ul>
-
-            <div class="tab-content">
-              <div class="tab-pane fade in active" id="tab1">
-                <h4>Tab 1</h4>
+        <div class="col-md-12 m-t-3">
+            <h2 class="major m-y-3">Crypt your message</h2>
+        </div>
+        <div class="col-md-6">
+            <select name="crypt">
+                <option selected disabled>Выберите метод шифрования</option>
+                <option value="1">Замены</option>
+                <option value="2">Подстановки</option>
+                <option value="3">Адитивный</option>
+                <option value="4">Другой</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 p-y-3">
+            <form method="POST" id="post-form">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="post-text">Ваше сообщение: </label>
+                    {{ post_form.text }}
+                </div>
+                <ul class="actions pull-xs-right">
+                    <li>
+                        <input type="submit" value="Зашифровать">
+                    </li>
+                </ul>
+                <div id="results"></div>
+            </form>
+        </div>
+        <div class="col-md-6 p-y-3">
+            <form method="post" id="decrypt-form">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="post-text">Зашифрованное сообщение: </label>
+                    {{ decrypt_form.text }}
+                </div>
+                <ul class="actions pull-xs-right">
+                    <li>
+                        <input type="submit" value="Расшифровать">
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+<!-- <h4>Tab 1</h4>
                 <form method="POST" id="post-form">
                 {% csrf_token %}
                 <div class="fieldWrapper" id="the_post">
@@ -25,26 +55,13 @@
                 </div>
                 <div id="results"></div>
                 <input type="submit" value="Post" class="button">
-                </form>
-              </div>
-              <div class="tab-pane fade" id="tab2">
-                <h4>Tab 2</h4>
-              </div>
-              <div class="tab-pane fade" id="tab3">
-                <h4>Tab 3</h4>
-              </div>
-              <div class="tab-pane fade" id="tab4">
-                <h4>Tab 4</h4>
-              </div>
-            </div>
-          </div>
-        </div><!--/.panel-->
-        <div class="row" id="talk">
+                </form> -->
+<!--         <div class="row" id="talk">
               {% for post in all_posts %}
               <div class="col-md-4">
                 <div class="panel panel-info">
                   <div class="panel-heading">
-                    {{ post.created }}
+                  <p>Сообщение #{{ post.pk }}</p>
                   </div>
                   <div class="panel-body">
                     <p>{{ post.text }}</p>
@@ -52,9 +69,6 @@
                 </div>
               </div>
               {% endfor %}
-            </div>
-
-    </div><!-- /.row -->
-
+            </div> -->
 
 {% endblock content %}

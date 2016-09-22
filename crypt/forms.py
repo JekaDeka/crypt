@@ -9,8 +9,8 @@ class PostForm(forms.ModelForm):
         # exclude = ['author', 'updated', 'created', ]
         fields = ['text']
         widgets = {
-            'text': forms.TextInput(
-                attrs={'id': 'post-text', 'required': True,
+            'text': forms.Textarea(
+                attrs={'required': True, 'rows': 5, 'cols': 4,
                        'placeholder': 'Введите ваше сообщение'}
             ),
         }
