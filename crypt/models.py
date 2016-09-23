@@ -1,18 +1,12 @@
 from django.db import models
-
-# def extend(string_to_expand, length):
-#    return (string_to_expand * ((length/len(string_to_expand))+1))[:length]
-
-
-# def substitution(text):
-# 	splitedText = list(text)
-# 	tmp = "ключ"
+from crypt import encode
 
 
 class Post(models.Model):
     text = models.TextField()
-    crypted_text = models.TextField(default=None)
     crypted_type = models.PositiveSmallIntegerField(default=1)
+    key = models.TextField(default=None)
+    crypted_text = models.TextField(default=None)
 
     # Time is a rhinocerous
     updated = models.DateTimeField(auto_now=True)
@@ -26,7 +20,10 @@ class Post(models.Model):
 
     def crypt(self):
         if self.crypted_type == 1:
-            return "First crypt type"
+            dic = encode.getAlphabet()
+            vec = encode.toNumVecX(self.text, dic)
+            key = encode.generateKey(vec, dic)
+            return encode.encrypt(vec, dic, key), encode.keyToString(key, dic)
         elif self.crypted_type == 2:
             return "Snd crypt type"
         elif self.crypted_type == 3:
@@ -35,5 +32,5 @@ class Post(models.Model):
             return "Another crypt type"
 
     def save(self, *args, **kwargs):
-        self.crypted_text = self.crypt()
+        self.crypted_text, self.key = self.crypt()
         super(Post, self).save(*args, **kwargs)

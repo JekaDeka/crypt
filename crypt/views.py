@@ -33,8 +33,10 @@ def create_post(request, pk):
         response_data['result'] = 'Create post successful!'
         response_data['postpk'] = post.pk
         response_data['text'] = post.text
-        response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
+        # response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
         response_data['type'] = post.crypted_type
+        response_data['key'] = post.key
+        response_data['crypted_text'] = post.crypted_text
 
         return HttpResponse(
             json.dumps(response_data),
@@ -49,17 +51,15 @@ def create_post(request, pk):
 
 def decrypt_post(request, pk):
     if request.method == 'POST':
-        post_text = request.POST.get('the_post')
+        crypted_text = request.POST.get('the_post')
         response_data = {}
 
-        post = Post(text=post_text, crypted_type=int(pk))
-        post.save()
-
-        response_data['result'] = 'Create post successful!'
-        response_data['postpk'] = post.pk
+        post = Post.objects.filter(crypted_text=crypted_text)
+        # hot-fix to return only obj in case of same crypted text
+        # because key is same to all objects
+        post = post[0]
         response_data['text'] = post.text
-        response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
-        response_data['type'] = post.crypted_type
+        response_data['key'] = post.key
 
         return HttpResponse(
             json.dumps(response_data),

@@ -2,17 +2,17 @@ $(function() {
 
 
     // Submit post on submit
-    $('#post-form').on('submit', function(event){
+    $('#post-form').on('submit', function(event) {
         event.preventDefault();
-        console.log("form submitted!")  // sanity check
+        console.log("form submitted!") // sanity check
         if ($("[name=crypt]").val() != null)
             create_post($("[name=crypt]").val());
     });
 
     // Submit decrypt-post on submit
-    $('#decrypt-form').on('submit', function(event){
+    $('#decrypt-form').on('submit', function(event) {
         event.preventDefault();
-        console.log("form submitted!")  // sanity check
+        console.log("form submitted!") // sanity check
         if ($("[name=crypt]").val() != null)
             decrypt_post($("[name=crypt]").val());
     });
@@ -21,26 +21,31 @@ $(function() {
     function create_post(type) {
         console.log("create post is working!") // sanity check
         $.ajax({
-            url : "create_post/" + parseInt(type) + "/", // the endpoint
-            type : "POST", // http method
-            data : { the_post : $('#id_post-text').val() }, // data sent with the post request
-            beforeSend : function(xhr, settings){
-              //call global beforeSend func
-              $.ajaxSettings.beforeSend(xhr, settings);
+            url: "create_post/" + parseInt(type) + "/", // the endpoint
+            type: "POST", // http method
+            data: { the_post: $('#id_post-text').val() }, // data sent with the post request
+            beforeSend: function(xhr, settings) {
+                //call global beforeSend func
+                $.ajaxSettings.beforeSend(xhr, settings);
 
             },
             // handle a successful response
-            success : function(json) {
+            success: function(json) {
                 //$('#id_post-text').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
 
-                $("#id_decrypt-text").val(json.text);
+                var span = "<span class='key' id='key_span'style='display: none'><b>Ключ: </b>"+ json.key +"</span>";
+                $('#id_decrypt-text').val(json.crypted_text);
+
+                $('#key_field').prepend(span);
+                $('#key_span').fadeIn(200);
+
 
                 console.log("success"); // another sanity check
                 // $(btn).css('background-color','white');
             },
             // handle a non-successful response
-            error : function(xhr,errmsg,err) {
+            error: function(xhr, errmsg, err) {
                 $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
                     " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
@@ -52,32 +57,17 @@ $(function() {
     function decrypt_post(type) {
         console.log("decrypt post is working!") // sanity check
         $.ajax({
-            url : "decrypt_post/" + parseInt(type) + "/", // the endpoint
-            type : "POST", // http method
-            data : { the_post : $('#id_decrypt-text').val() }, // NEED TO SEND IF OF A POST
+            url: "decrypt_post/" + parseInt(type) + "/", // the endpoint
+            type: "POST", // http method
+            data: { the_post: $('#id_decrypt-text').val() },
             // handle a successful response
-            success : function(json) {
+            success: function(json) {
                 $('#id_decrypt-text').val(''); // remove the value from the input
-                console.log(json); // log the returned json to the console
-
-                var div_to_insert = '<div class="col-md-4" style="display: none;"> \
-                                        <div class="panel panel-success"> \
-                                            <div class="panel-heading"> \
-                                                Сообщение #' + json.postpk + ' \
-                                            </div>\
-                                            <div class="panel-body">' +
-                                                '<p>' + json.text + '</p> \
-                                            </div> \
-                                        </div> \
-                                    </div>';
-
-                $("#talk").prepend(div_to_insert);
-                var fst_div = $("#talk").find('.col-md-4').first()
-                $(fst_div).fadeIn('slow');
+                $('#id_decrypt-text').val(json.text);
                 console.log("success"); // another sanity check
             },
             // handle a non-successful response
-            error : function(xhr,errmsg,err) {
+            error: function(xhr, errmsg, err) {
                 $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
                     " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
@@ -112,6 +102,7 @@ $(function() {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
+
     function sameOrigin(url) {
         // test that a given url is a same-origin URL
         // url could be relative or scheme relative or absolute
