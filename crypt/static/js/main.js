@@ -34,8 +34,12 @@ $(function() {
                 //$('#id_post-text').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
 
-                var span = "<span class='key' id='key_span'style='display: none'><b>Ключ: </b>"+ json.key +"</span>";
+
+                var span = "<span class='key' id='key_span'style='display: none'><b>Ключ: </b>" + json.key + "</span>";
                 $('#id_decrypt-text').val(json.crypted_text);
+                if ($('#key_field').children().length != 0) {
+                    $('#key_field').children()[0].remove()
+                }
 
                 $('#key_field').prepend(span);
                 $('#key_span').fadeIn(200);
