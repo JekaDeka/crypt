@@ -33,9 +33,11 @@ $(function() {
             success: function(json) {
                 //$('#id_post-text').val(''); // remove the value from the input
                 console.log(json); // log the returned json to the console
-
-
-                var span = "<span class='key' id='key_span'style='display: none'><b>Ключ: </b>" + json.key + "</span>";
+                var name = "<b>Ключ: </b>"
+                if (type == 2) {
+                    name = "<b>Открытый ключ: </b>"
+                }
+                var span = "<p class='key' id='key_span'style='display: none'>" + name + json.key + "</p>";
                 $('#id_decrypt-text').val(json.crypted_text);
                 if ($('#key_field').children().length != 0) {
                     $('#key_field').children()[0].remove()
@@ -68,6 +70,7 @@ $(function() {
             success: function(json) {
                 $('#id_decrypt-text').val(''); // remove the value from the input
                 $('#id_decrypt-text').val(json.text);
+                console.log("private key: " + json.privkey);
                 console.log("success"); // another sanity check
             },
             // handle a non-successful response

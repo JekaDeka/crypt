@@ -55,11 +55,10 @@ def decrypt_post(request, pk):
         response_data = {}
 
         post = Post.objects.filter(crypted_text=crypted_text)
-        # hot-fix to return only obj in case of same crypted text
-        # because key is same to all objects
-        post = post[0]
-        response_data['text'] = post.text
-        response_data['key'] = post.key
+        if post:
+            post = post[0]
+            response_data['text'] = post.text
+            response_data['privkey'] = post.privkey
 
         return HttpResponse(
             json.dumps(response_data),

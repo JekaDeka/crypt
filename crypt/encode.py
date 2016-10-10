@@ -1,12 +1,7 @@
 import numpy as np
 import random
 import fractions
-
-# generate alphabet => ASCII number???
-# convert message to vector (Nx6)
-# generate key by matrix => inverted / det A!=0, size by message
-# C = K * P (mod 26)
-# C is the answer
+import rsa
 
 
 def getAlphabet():

@@ -6,7 +6,7 @@
 .key {
     background: rgba(39, 42, 56, 0.55);
     border-radius: 5px;
-/*    border: none;*/
+    /*    border: none;*/
     border: solid 2px rgba(255, 255, 255, 0.125);
     color: inherit;
     /*display: block;*/
@@ -14,12 +14,14 @@
     padding: 0.2em 0.5em;
     text-decoration: none;
     width: 100%;
+    word-wrap: break-word;
 }
 
 p.major {
     padding-bottom: 1em;
     border-bottom: solid 2px rgba(255, 255, 255, 0.125);
     /*width: 100%;*/
+    word-wrap: break-word;
 }
 
 @import url(../css/font-awesome.min.css);
