@@ -70,6 +70,9 @@ $(function() {
             success: function(json) {
                 $('#id_decrypt-text').val(''); // remove the value from the input
                 $('#id_decrypt-text').val(json.text);
+                if (json.text == '') {
+                    $('#id_decrypt-text').val($('#id_post-text').val());
+                }
                 console.log("private key: " + json.privkey);
                 console.log("success"); // another sanity check
             },
