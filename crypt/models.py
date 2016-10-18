@@ -1,5 +1,6 @@
 from django.db import models
 from crypt import encode
+from crypt import GAMMA
 import rsa
 
 
@@ -35,7 +36,11 @@ class Post(models.Model):
             return enc.decode('utf-8', 'replace'), hex(pubkey.n)[:-1] + "?" + hex(pubkey.e)[:-1]
 
         elif self.crypted_type == 3:
-            return "Thrd crypt type"
+            dic = GAMMA.getAlphabet()
+            key = GAMMA.getKey(self.text, dic)
+            C = GAMMA.encrypt(self.text, key, dic)
+            cs = GAMMA.getString(C, dic)
+            return cs, key
         else:
             return "Another crypt type"
 
@@ -47,7 +52,11 @@ class Post(models.Model):
             return (rsa.decrypt(self.crypted_text, privkey))
 
         elif self.crypted_type == 3:
-            return "Thrd ctypt type"
+            dic = GAMMA.getAlphabet()
+            T = GAMMA.decrypt(this.crypted_text, this.key, dic)
+            ts = GAMMA.getString(T, dic)
+            return ts
+
         else:
             return "Another ctypt tpye"
 

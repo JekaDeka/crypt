@@ -3,7 +3,9 @@ import os
 import random
 import sys
 import types
-import rsa
+import numpy as np
+# import rsa
+
 
 '''
 Euclid's algorithm for determining the greatest common divisor
@@ -15,6 +17,27 @@ def gcd(a, b):
     while b != 0:
         a, b = b, a % b
     return a
+
+'''
+Computing the least common multiple
+'''
+
+
+def lcm(a, b):
+    lmda = abs(a * b) / gcd(a, b)
+    return int(lmda)
+
+'''
+L - function: L(u) = (u-1)/n
+'''
+
+
+def L(u, n):
+    return ((u - 1) / n)
+
+
+def generate_nu(lmda, g, n):
+    return ((L((g ** lmda) % n**2, n)) ** (-1)) % n
 
 '''
 Euclid's extended algorithm for finding the multiplicative inverse of two numbers
@@ -46,37 +69,33 @@ def multiplicative_inverse(a, b):
     # return a , lx, ly  # Return only positive values
     return lx
 
+
 '''
 Tests to see if a number is prime.
 '''
 
 
-def find_p_q(nbits):
-    """Returns a tuple of two different primes of nbits bits"""
-    pbits = nbits + (nbits / 16)  # Make sure that p and q aren't too close
-    qbits = nbits - (nbits / 16)  # or the factoring programs can factor n
-    p = getprime(pbits)
-    while True:
-        q = getprime(qbits)
-        # Make sure p and q are different.
-        if not q == p:
-            break
-    return (p, q)
+def is_prime(num):
+    if num == 2:
+        return True
+    if num < 2 or num % 2 == 0:
+        return False
+    for n in range(3, int(num**0.5) + 2, 2):
+        if num % n == 0:
+            return False
+    return True
 
 
 def read_random_int(nbits):
-    """Reads a random integer of approximately nbits bits rounded up
-    to whole bytes"""
-
-    nbytes = int(math.ceil(nbits / 8.))
-    randomdata = os.urandom(nbytes)
-    return bytes2int(randomdata)
+    return np.random.random_integers(nbits)
 
 
 def getprime(nbits):
     """Returns a prime number of max. 'math.ceil(nbits/8)*8' bits. In
     other words: nbits is rounded up to whole bytes.
     """
+
+    nbytes = int(math.ceil(nbits / 8.))
 
     while True:
         integer = read_random_int(nbits)
@@ -93,15 +112,19 @@ def getprime(nbits):
     return integer
 
 
-def is_prime(num):
-    if num == 2:
-        return True
-    if num < 2 or num % 2 == 0:
-        return False
-    for n in range(3, int(num**0.5) + 2, 2):
-        if num % n == 0:
-            return False
-    return True
+def find_p_q(nbits):
+    """Returns a tuple of two different primes of nbits bits"""
+    pbits = nbits + (nbits / 16)  # Make sure that p and q aren't too close
+    qbits = nbits - (nbits / 16)  # or the factoring programs can factor n
+    p = getprime(pbits)
+    while True:
+        q = getprime(qbits)
+        # Make sure p and q are different.
+        if not q == p:
+            break
+        if gcd(p * q, (p - 1) * (q - 1)) == 1:
+            break
+    return (p, q)
 
 
 def generate_keypair(p, q):
@@ -109,31 +132,36 @@ def generate_keypair(p, q):
         raise ValueError('Both numbers must be prime.')
     elif p == q:
         raise ValueError('p and q cannot be equal')
-    #n = pq
+    # n = pq
     n = p * q
 
-    # Phi is the totient of n
-    phi = (p - 1) * (q - 1)
+    # lambda = lcm(p-1, q-1)
+    lmda = lcm(p - 1, q - 1)
 
-    # Choose an integer e such that e and phi(n) are coprime
-    e = random.randrange(1, phi)
+    # Choose an integer g where g in Z(n^2)
+    g = random.randrange(1, n)
+    j = gcd(lmda, g)
+    while j != 1:
+        g = random.randrange(1, n)
+        j = gcd(g, lmda)
 
-    # Use Euclid's Algorithm to verify that e and phi(n) are comprime
-    g = gcd(e, phi)
-    while g != 1:
-        e = random.randrange(1, phi)
-        g = gcd(e, phi)
+    # Use Euclid's Algorithm to verify that g and nu are comprime
+    # nu = gcd(lmda, g)
+    # while nu != 1:
+    #     g = random.randrange(1, n**2)
+    #     nu = gcd(g, nu)
 
     # Use Extended Euclid's Algorithm to generate the private key
-    d = multiplicative_inverse(e, phi)
-
+    # d = multiplicative_inverse(e, phi)
+    # nu = generate_nu(lmda, g, n)
     # Return public and private keypair
-    # Public key is (e, n) and private key is (d, n)
-    return ((e, n), (d, n))
+    # Public key is (n, g) and private key is (lmda, nu)
+    return ((n, g), (lmda))
 
 
 def newkeys(nbits):
     p, q = find_p_q(nbits)
+    print(p, q)
     return generate_keypair(p, q)
 
 
